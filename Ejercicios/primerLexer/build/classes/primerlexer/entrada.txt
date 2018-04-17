@@ -1,0 +1,3 @@
+Hay 256 valores cuando uso 8 bits.
+
+El precio de 10GB es $55.99. -
