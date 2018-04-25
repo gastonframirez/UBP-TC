@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Creado por: Gaston F. Ramirez
+ * Año: 2018
+ * Materia: Técnicas de Compilación
  */
  
  
@@ -27,7 +27,7 @@
     ACLARACIÓN: Las instrucciones son una única instrucción o un bloque de instrucciones encerradas entre llaves. 
 */
 
-grammar primerSintax;
+grammar sintaxC;
 
 
 // Lista de TOKENS
@@ -80,7 +80,6 @@ MODULUS: '%';
 INCREMENT: PLUS PLUS;
 DECREMENT: LESS LESS;
                            
-//Lista de reglas gramaticales
 // int a;
 // int a,b,c;
 // declaracion: tipo + id + (',' id)*
@@ -94,6 +93,8 @@ DECREMENT: LESS LESS;
 // asignacion: id + = + valor
 // RECURSIVO LO DEL MEDIO ENTRE TIPO Y ;
 
+
+//Lista de reglas gramaticales
 prog: instructions
     |
     ;
