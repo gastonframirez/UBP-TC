@@ -109,6 +109,7 @@ instr: varDeclaration
      | function
      | aritAssignment
      | returnStatement
+     | functionCall
      ;
 
 instBlock: OBRACE instructions CBRACE;
@@ -154,7 +155,14 @@ returnStatement: RETURN SEMICOLON
                ;
  
 function: funcPrototype instBlock;
-       
+
+
+functionCall: ID OPAR listFunctValues CPAR SEMICOLON;
+
+listFunctValues: value listFunctValues
+               | COMMA value listFunctValues
+               |
+               ;
 
 operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS ;
 
@@ -163,13 +171,13 @@ operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS ;
 aritAssignment: ID ASSIGN exp SEMICOLON
               | type ID ASSIGN exp SEMICOLON;
 
-exp: e;
+exp: expression;
 
-e: t e
+expression: term expression
  | 
  ;
 
-t: operator t
+term: operator term
  | factor
  ;
 
