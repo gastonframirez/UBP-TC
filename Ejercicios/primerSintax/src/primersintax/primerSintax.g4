@@ -39,7 +39,8 @@ INT: 'int';
 DOUBLE: 'double';
 CHAR: 'char';
 VOID: 'void';
-//C++
+
+//Palabras C++
 RETURN: 'return';
 
 // Punctuation marks
@@ -64,14 +65,20 @@ FLOATNUMBER: INTNUMBER '.' | INTNUMBER '.' INTNUMBER | '.' INTNUMBER;
 INTNUMBER: (DIGIT)+;
 
 DIGIT: [0-9];
-//UNICODE: '\u0000'..'\uFFFE';
-//CHARVALUE: '\''UNICODE'\'';
 
 fragment LETTER : [a-zA-Z] ;
 ID : ('_' | LETTER) ('_' | LETTER | DIGIT)*;
 
+CHARVALUE: '\'' LETTER '\'';
 
-
+//OPERACIONES
+PLUS: '+';
+LESS: '-';
+DIVIDE: '/';
+MULTIPLY: '*';
+MODULUS: '%';
+INCREMENT: PLUS PLUS;
+DECREMENT: LESS LESS;
                            
 //Lista de reglas gramaticales
 // int a;
@@ -92,25 +99,32 @@ prog: instructions
     ;
 
 instructions: instr instructions
+            | instBlock instructions
             |
             ;
 
 instr: varDeclaration
      | funcProtDec
      | function
+     | aritAssignment
+     | returnStatement
      ;
+
+instBlock: OBRACE instructions CBRACE;
 
 
 type: INT 
     | DOUBLE 
     | CHAR;
 
-functype: type 
+functype: INT 
+        | DOUBLE 
+        | CHAR 
         | VOID;
 
 value: INTNUMBER 
      | FLOATNUMBER 
- //    | CHARVALUE
+     | CHARVALUE
      ;
 
 varDeclaration: type idsList SEMICOLON;
@@ -121,7 +135,7 @@ idsList: ID assignment idsList //si ASIGNACION? --> otra regla que controle y te
        ;                
 
 assignment: ASSIGN value
-          |
+          | 
           ;
 
 
@@ -138,5 +152,26 @@ returnStatement: RETURN SEMICOLON
                | RETURN ID SEMICOLON
                ;
  
-function: funcPrototype OBRACE instructions returnStatement CBRACE;
-          
+function: funcPrototype instBlock;
+       
+
+operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS ;
+
+
+//Operacion aritmetica:
+aritAssignment: ID ASSIGN exp SEMICOLON
+              | type ID ASSIGN exp SEMICOLON;
+
+exp: e;
+
+e: t e
+ | 
+ ;
+
+t: operator t
+ | factor
+ ;
+
+factor: value
+      | ID
+      ;
