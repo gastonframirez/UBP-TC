@@ -5,7 +5,30 @@
  */
  
  
+/*
+    - Declaracion de variables (int, double, char) 
+        - 1 var
+        - m variables --> lista de variables (var1, var2, var3)
+        - 1 var con asignacion
+        - m variables con asignacion (var1 = 2, var2 = 1, ...)
+        
+    - Prototipo de funcion
+        - sin argumentos
+        - 1 argumento
+        - n argumento
+        
+    Utilizando los símbolos del Analizador Léxico que venimos trabajando, se pide realizar las 
+    Reglas Gramaticales de un lenguaje C reducido considerando lo siguiente:
+
+    - Declaraciones de datos
+    - Funciones, sus prototipos y return
+    - Asignaciones (solo operaciones aritméticas)
+    
+    ACLARACIÓN: Las instrucciones son una única instrucción o un bloque de instrucciones encerradas entre llaves. 
+*/
+
 grammar sintaxC;
+
 
 // Lista de TOKENS
 WS: [ \n\t\r] -> skip;
@@ -86,6 +109,7 @@ instr: varDeclaration
      | function
      | aritAssignment
      | returnStatement
+     | functionCall
      ;
 
 instBlock: OBRACE instructions CBRACE;
@@ -131,7 +155,14 @@ returnStatement: RETURN SEMICOLON
                ;
  
 function: funcPrototype instBlock;
-       
+
+
+functionCall: ID OPAR listFunctValues CPAR SEMICOLON;
+
+listFunctValues: value listFunctValues
+               | COMMA value listFunctValues
+               |
+               ;
 
 operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS ;
 
@@ -140,13 +171,13 @@ operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS ;
 aritAssignment: ID ASSIGN exp SEMICOLON
               | type ID ASSIGN exp SEMICOLON;
 
-exp: e;
+exp: expression;
 
-e: t e
+expression: term expression
  | 
  ;
 
-t: operator t
+term: operator term
  | factor
  ;
 

@@ -1,3 +1,6 @@
 void prueba();
 void prueba(int a, int b);
 int prueba();
+
+prueba();
+prueba(2, 3);

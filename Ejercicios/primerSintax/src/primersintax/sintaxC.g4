@@ -80,21 +80,8 @@ MODULUS: '%';
 INCREMENT: PLUS PLUS;
 DECREMENT: LESS LESS;
                            
-// int a;
-// int a,b,c;
-// declaracion: tipo + id + (',' id)*
-
-// int a = 0;
-// int a = 0, b = 1, c = 2;
-// char d = 'a';
-// float e = 1.002;
-
-// declaracion: tipo + asignacion + (',' asignacion)*
-// asignacion: id + = + valor
-// RECURSIVO LO DEL MEDIO ENTRE TIPO Y ;
-
-
 //Lista de reglas gramaticales
+
 prog: instructions
     |
     ;
@@ -112,35 +99,40 @@ instr: varDeclaration
      | functionCall
      ;
 
+//Bloque de instrucciones
 instBlock: OBRACE instructions CBRACE;
 
-
+//Tipos de datos
 type: INT 
     | DOUBLE 
     | CHAR;
 
+//Tipos de funciones
 functype: INT 
         | DOUBLE 
         | CHAR 
         | VOID;
 
+//Valores posibles
 value: INTNUMBER 
      | FLOATNUMBER 
      | CHARVALUE
      ;
 
+//Declaracion de variables
 varDeclaration: type idsList SEMICOLON;
 
-idsList: ID assignment idsList //si ASIGNACION? --> otra regla que controle y tenga vacio
+idsList: ID assignment idsList
        | COMMA ID assignment idsList
        |
        ;                
 
+//Asignacion de variables con valor
 assignment: ASSIGN value
           | 
           ;
 
-
+//Prototipo de Funcionnes
 funcPrototype: functype ID OPAR listDeclarationFunc CPAR;
 funcProtDec: funcPrototype SEMICOLON;
 
@@ -149,21 +141,28 @@ listDeclarationFunc: type ID assignment listDeclarationFunc
                    |
                    ;
 
+// Instruccion Return
 returnStatement: RETURN SEMICOLON
                | RETURN value SEMICOLON
                | RETURN ID SEMICOLON
+               | RETURN functionCall
+               | RETURN expression SEMICOLON
                ;
  
+// Funcion
 function: funcPrototype instBlock;
 
-
+// Llamada a funcion
 functionCall: ID OPAR listFunctValues CPAR SEMICOLON;
 
 listFunctValues: value listFunctValues
                | COMMA value listFunctValues
+               | ID listFunctValues
+               | COMMA ID listFunctValues
                |
                ;
 
+// Operadores artimeticos
 operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS ;
 
 
