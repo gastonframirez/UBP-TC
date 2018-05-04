@@ -6,25 +6,16 @@
  
  
 /*
-    - Declaracion de variables (int, double, char) 
-        - 1 var
-        - m variables --> lista de variables (var1, var2, var3)
-        - 1 var con asignacion
-        - m variables con asignacion (var1 = 2, var2 = 1, ...)
-        
-    - Prototipo de funcion
-        - sin argumentos
-        - 1 argumento
-        - n argumento
-        
-    Utilizando los símbolos del Analizador Léxico que venimos trabajando, se pide realizar las 
-    Reglas Gramaticales de un lenguaje C reducido considerando lo siguiente:
+    Dado un archivo de entrada en lenguaje C, se debe generar como salida el Árbol Sintáctico (ANTLR) correcto. 
+    Para lograr esto se debe construir un parser que tenga como mínimo la implementación de los siguientes puntos:
+        - Reconocimiento de un bloque de código, que puede estar en cualquier parte del código fuente, controlando balance de llaves.
+        - Verificación de :
+            - declaraciones y asignaciones, 
+            - operaciones aritmético/lógicas, 
+            - declaración/llamada a función.
 
-    - Declaraciones de datos
-    - Funciones, sus prototipos y return
-    - Asignaciones (solo operaciones aritméticas)
-    
-    ACLARACIÓN: Las instrucciones son una única instrucción o un bloque de instrucciones encerradas entre llaves. 
+        - Verificación de las estructuras de control if, for y while. 
+    Ante el primer error léxico o sintáctico el programa deberá terminar.
 */
 
 grammar sintaxC;
@@ -60,6 +51,39 @@ CBRACKET: ']'; //Token de Corchete de cierre
 
 ASSIGN: '=';
 
+// Operaciones Aritmeticas
+PLUS: '+';
+LESS: '-';
+DIVIDE: '/';
+MULTIPLY: '*';
+MODULUS: '%';
+INCREMENT: PLUS PLUS;
+DECREMENT: LESS LESS;
+          
+// Operaciones Logicas
+OR : '||';
+AND : '&&';
+NOT : '!';
+
+
+// Ciclos
+WHILE : 'while';
+FOR : 'for';
+
+// Condiciones
+IF : 'if';
+ELSE : 'else';
+
+// Comparaciones logicas
+EQUAL : '==';
+NOTEQUAL : '!=';
+GREATERTHAN : '>';
+LESSTHAN : '<';
+GREATERTHANEQUAL : '>=';
+LESSTHANEQUAL : '<=';
+
+
+
 //valores
 FLOATNUMBER: INTNUMBER '.' | INTNUMBER '.' INTNUMBER | '.' INTNUMBER;
 INTNUMBER: (DIGIT)+;
@@ -71,27 +95,6 @@ ID : ('_' | LETTER) ('_' | LETTER | DIGIT)*;
 
 CHARVALUE: '\'' LETTER '\'';
 
-//OPERACIONES
-PLUS: '+';
-LESS: '-';
-DIVIDE: '/';
-MULTIPLY: '*';
-MODULUS: '%';
-INCREMENT: PLUS PLUS;
-DECREMENT: LESS LESS;
-                           
-// int a;
-// int a,b,c;
-// declaracion: tipo + id + (',' id)*
-
-// int a = 0;
-// int a = 0, b = 1, c = 2;
-// char d = 'a';
-// float e = 1.002;
-
-// declaracion: tipo + asignacion + (',' asignacion)*
-// asignacion: id + = + valor
-// RECURSIVO LO DEL MEDIO ENTRE TIPO Y ;
 
 
 //Lista de reglas gramaticales
@@ -104,12 +107,15 @@ instructions: instr instructions
             |
             ;
 
-instr: varDeclaration
+instr: varDeclaration SEMICOLON
      | funcProtDec
      | function
-     | aritAssignment
+     | aritAssignment SEMICOLON
      | returnStatement
      | functionCall
+     | ifStatement
+     | forStatement
+     | whileStatement
      ;
 
 instBlock: OBRACE instructions CBRACE;
@@ -129,14 +135,21 @@ value: INTNUMBER
      | CHARVALUE
      ;
 
-varDeclaration: type idsList SEMICOLON;
+
+init: varDeclaration
+    | idsList
+    ;
+
+varDeclaration: type idsList;
 
 idsList: ID assignment idsList //si ASIGNACION? --> otra regla que controle y tenga vacio
        | COMMA ID assignment idsList
        |
        ;                
 
-assignment: ASSIGN value
+assignmentOperator:   '=' | '*=' | '/=' | '%=' | '+=' | '-=';
+
+assignment: assignmentOperator exp
           | 
           ;
 
@@ -159,17 +172,18 @@ function: funcPrototype instBlock;
 
 functionCall: ID OPAR listFunctValues CPAR SEMICOLON;
 
-listFunctValues: value listFunctValues
-               | COMMA value listFunctValues
+listFunctValues: factor listFunctValues
+               | COMMA factor listFunctValues
                |
                ;
 
-operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS ;
+operator: LESS | PLUS | DIVIDE | MULTIPLY | MODULUS;
 
 
 //Operacion aritmetica:
-aritAssignment: ID ASSIGN exp SEMICOLON
-              | type ID ASSIGN exp SEMICOLON;
+aritAssignment: ID assignmentOperator exp
+              | type ID assignmentOperator exp
+              ;
 
 exp: expression;
 
@@ -184,3 +198,44 @@ term: operator term
 factor: value
       | ID
       ;
+
+ifStatement: IF OPAR condList CPAR (instr | instBlock) (elseStatement)?;
+
+elseStatement: ELSE (instr | instBlock);
+
+condList: condition
+     | condition AND condList
+     | condition OR condList;
+
+condition: b_exp relationalOperator b_exp;
+
+relationalOperator: EQUAL
+                  | NOTEQUAL
+                  | GREATERTHAN
+                  | GREATERTHANEQUAL
+                  | LESSTHAN
+                  | LESSTHANEQUAL
+                  ;
+
+b_exp: boolean_expression;
+
+boolean_expression: boolean_term boolean_expression
+ | 
+ ;
+
+boolean_term: relationalOperator boolean_term
+ | factor
+ | term
+ ;
+
+
+//Increment Operations
+incrementStatement: ID INCREMENT
+                  | ID DECREMENT
+                  | aritAssignment
+                  ;
+
+forStatement: FOR OPAR forDefinition CPAR instBlock;
+forDefinition: init SEMICOLON condList SEMICOLON incrementStatement;
+
+whileStatement: WHILE OPAR condList CPAR instBlock;

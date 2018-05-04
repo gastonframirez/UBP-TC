@@ -128,7 +128,7 @@ idsList: ID assignment idsList
        ;                
 
 //Asignacion de variables con valor
-assignment: ASSIGN value
+assignment: ASSIGN exp
           | 
           ;
 
@@ -136,8 +136,8 @@ assignment: ASSIGN value
 funcPrototype: functype ID OPAR listDeclarationFunc CPAR;
 funcProtDec: funcPrototype SEMICOLON;
 
-listDeclarationFunc: type ID assignment listDeclarationFunc
-                   | COMMA type ID assignment listDeclarationFunc
+listDeclarationFunc: type ID listDeclarationFunc
+                   | COMMA type ID listDeclarationFunc
                    |
                    ;
 

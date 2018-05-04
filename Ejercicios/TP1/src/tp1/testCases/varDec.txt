@@ -4,3 +4,5 @@ double c, d=1, e;
 char c = 'a';
 
 a=b;
+a+=b;
+b++;

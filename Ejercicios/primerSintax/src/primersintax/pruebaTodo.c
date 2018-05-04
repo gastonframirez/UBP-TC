@@ -6,14 +6,16 @@ void vacio();
 void parametros(int a, int b);
 int vaciotipo(); 
 double  parametrostipo(int a, double b);
-void parametrostipoass(int a = 0 , double b = 0);
+void parametrostipoass(int a , double b);
 
 
-int pruebaFuncValor(){
+int main(){
     int a = 0;
     double b = 15/2;
     a = 10 + 15 / b;
     char c = 'a';
+    return 0;
+    a=b, c=d;
     return 0;
 }
  

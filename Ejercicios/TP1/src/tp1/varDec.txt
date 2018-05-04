@@ -1,4 +1,0 @@
-int a = 0;
-int b;
-double c, d=1, e;
-char c = 'a';
