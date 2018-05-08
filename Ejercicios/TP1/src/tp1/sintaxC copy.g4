@@ -22,23 +22,24 @@ grammar sintaxC;
 
 
 // Lista de TOKENS
-
-// Caracteres especiales
 WS: [ \n\t\r] -> skip;
 
 
-//TOKENS de palabras reservadas de tipos
+//Tipos
 INT: 'int';
 DOUBLE: 'double';
 CHAR: 'char';
 VOID: 'void';
 
-// TOKENS de simbolos de puntuacion
+//Palabras C++
+RETURN: 'return';
+
+// Punctuation marks
 SEMI: ';';
 COMMA: ',';
 
 
-//TOKENS de Simbolos
+//Simbolos Extra
 OPAR: '('; //Token de Parentesis de apertura
 CPAR: ')'; //Token de Parentesis de cierre
 
@@ -48,7 +49,7 @@ CBRACE: '}'; //Token de Llave de cierre
 OBRACKET: '['; //Token de Corchete de apertura
 CBRACKET: ']'; //Token de Corchete de cierre
 
-// TOKENS de Asignaciones
+// Asignaciones
 ASSIGN: '=';
 MULTIPLYASSIGN: '*=';
 DIVIDEASSIGN: '/=';
@@ -56,7 +57,7 @@ MODULUSASSIGN: '%=';
 PLUSASSIGN: '+=';
 MINUSASSIGN: '-=';
 
-// TOKENS de Operaciones Aritmeticas
+// Operaciones Aritmeticas
 PLUS: '+';
 LESS: '-';
 DIVIDE: '/';
@@ -66,23 +67,21 @@ PLUSPLUS: '++';
 LESSLESS: '--';
 QUESTION: '?';
           
-// TOKENS de Operaciones Logicas
+// Operaciones Logicas
 OR : '||';
 AND : '&&';
 NOT : '!';
 
 
-// TOKENS de palabras reservadas 
-IF : 'if';
-ELSE : 'else';
-RETURN: 'return';
-
-// TOKENS de palabras reservadas de ciclos
+// Ciclos
 WHILE : 'while';
 FOR : 'for';
 
+// Condiciones
+IF : 'if';
+ELSE : 'else';
 
-// TOKENS de operaciones relacionales
+// Comparaciones logicas
 EQUAL : '==';
 NOTEQUAL : '!=';
 GREATERTHAN : '>';
@@ -91,17 +90,15 @@ GREATERTHANEQUAL : '>=';
 LESSTHANEQUAL : '<=';
 
 
-//TOKENS de valores
+
+//valores
 TRUE: 'true';
 FALSE: 'false';
 
-fragment DIGIT: [0-9];
-
-//Entero
+FLOATNUMBER: INTNUMBER '.' | INTNUMBER '.' INTNUMBER | '.' INTNUMBER;
 INTNUMBER: (DIGIT)+;
 
-//Flotante
-FLOATNUMBER: INTNUMBER '.' | INTNUMBER '.' INTNUMBER | '.' INTNUMBER;
+DIGIT: [0-9];
 
 fragment LETTER : [a-zA-Z] ;
 ID : ('_' | LETTER) ('_' | LETTER | DIGIT)*;
@@ -111,40 +108,38 @@ CHARVALUE: '\'' LETTER '\'';
 
 
 //Lista de reglas gramaticales
-program: instructions
-       |
-       ;
-
-instructions: instructions intr 
-            | intr
-            ;
-
-intr: varDeclaration
-    | funcDeclaration
+prog: instructions
+    |
     ;
 
-//Declaracion de variables
+instructions: instructions declaration 
+            | declaration
+            ;
+
+declaration: varDeclaration
+           | funcDeclaration
+           ;
+
 varDeclaration: typeSpecifier varDeclList SEMI;
+
+scopedVarDeclaration: scopedTypeSpecifier varDeclList SEMI;
 
 varDeclList: varDeclList COMMA varDeclInitialize
            | varDeclInitialize
            ;
 
-//Inicializacion de variables
 varDeclInitialize: varDeclId
                  | expression
                  ;
 
 varDeclId: ID;
 
-//Tipos de variables
+scopedTypeSpecifier: typeSpecifier;
+
 typeSpecifier: INT | DOUBLE | CHAR;
 
-//Tipos de returns
 returnTypeSpecifier: INT | DOUBLE | CHAR | VOID;
 
-
-//Declaracion de funcion
 funcDeclaration: returnTypeSpecifier ID OPAR params CPAR statement
                | ID OPAR params CPAR statement
                ;
@@ -166,13 +161,11 @@ paramIdList: paramIdList COMMA paramTypeList
 
 paramId: ID;
 
-statement: expressionStmt | instBlock | selectionStmt | iterationStmt | returnStmt;
+statement: expressionStmt | compoundStmt | selectionStmt | iterationStmt | returnStmt;
 
-//Bloque de instrucciones
-instBlock: OBRACE localDeclarations statementList CBRACE;
+compoundStmt: OBRACE localDeclarations statementList CBRACE;
 
-//Declaraciones locales de variables
-localDeclarations: localDeclarations varDeclaration
+localDeclarations: localDeclarations scopedVarDeclaration
                  |
                  ;
 
@@ -184,29 +177,26 @@ expressionStmt: expression SEMI
               | SEMI
               ;
 
-//Seleccion
 selectionStmt: IF OPAR simpleExpression CPAR statement
              | IF OPAR simpleExpression CPAR statement ELSE statement
              ;
 
-//Ciclos
 iterationStmt: whileStmt
              | forStmt
              ;
-//While
+
 whileStmt: WHILE OPAR simpleExpression CPAR statement;
 
-//For
 forStmt: FOR OPAR forDefinition CPAR statement;
-forDefinition: forInit SEMI simpleExpression SEMI expression;
-forInit: typeSpecifier varDeclList;
 
-//Return
+forDefinition: forInit SEMI simpleExpression SEMI expression;
+
+forInit: scopedTypeSpecifier varDeclList;
+
 returnStmt: RETURN SEMI
           | RETURN expression SEMI
           ;
 
-// Operadores de asignacion
 assignmentOperator:  ASSIGN | MULTIPLYASSIGN | DIVIDEASSIGN | MODULUS | PLUSASSIGN | MINUSASSIGN;
 
 expression : mutable assignmentOperator expression 
@@ -231,7 +221,6 @@ relExpression: sumExpression relationalOperator sumExpression
              | sumExpression
              ;
 
-// Operadores relacionales
 relationalOperator: EQUAL
                   | NOTEQUAL
                   | GREATERTHAN
@@ -239,28 +228,23 @@ relationalOperator: EQUAL
                   | LESSTHAN
                   | LESSTHANEQUAL
                   ;
-// Suma Aritmetica
+
 sumExpression: sumExpression arithSumOperator term
              | term
              ;
 
-// Operadores de suma aritmetica
 arithSumOperator: PLUS | LESS ;
 
-// Multiplicacion aritmetica
 term: term arithMultOperator unaryExpression
     | unaryExpression
     ;
 
-// Operadores de multiplicacion aritmetica
 arithMultOperator: MULTIPLY | DIVIDE | MODULUS;
 
-// Operacion unaria
 unaryExpression: unaryOperator unaryExpression
                | factor
                ;
 
-// Operadores unarios
 unaryOperator: LESS | MULTIPLY | QUESTION ;
 
 factor: immutable 
@@ -270,25 +254,22 @@ mutable: ID;
 
 immutable: OPAR expression CPAR 
          | call
-         | value
+         | constant
          ;
 
-// Llamada a funcion
 call: ID OPAR args CPAR;
 
-// Argumentos de funcion
 args: argList
     |
     ;
-// Lista de argumentos de funcion
+
 argList: argList COMMA expression
        | expression
        ;
 
-// Valores posibles
 value: INTNUMBER 
      | FLOATNUMBER 
      | CHARVALUE
-     | TRUE
-     | FALSE
      ;
+
+constant: value | TRUE | FALSE;

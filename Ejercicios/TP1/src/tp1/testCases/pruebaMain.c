@@ -1,12 +1,13 @@
 
 
-int main(){
-    int a = 0;
-    int b = 12;
-    a = 1, b= 11;
-    for(int c =0, d=1; c>d*10; c++){
-        
-    }
+int main () {
 
-    return a;
+   int a = 10;
+   int b = a + 2 / 3;
+   while(a < 20+b ) {
+      a++;
+   }
+ 
+   llamada();
+   return 0;
 }
