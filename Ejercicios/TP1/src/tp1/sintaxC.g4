@@ -33,6 +33,22 @@ DOUBLE: 'double';
 CHAR: 'char';
 VOID: 'void';
 
+
+// TOKENS de palabras reservadas 
+IF : 'if';
+ELSE : 'else';
+RETURN: 'return';
+TRUE: 'true';
+FALSE: 'false';
+
+
+// TOKENS de palabras reservadas de ciclos
+WHILE : 'while';
+FOR : 'for';
+
+
+
+
 // TOKENS de simbolos de puntuacion
 SEMI: ';';
 COMMA: ',';
@@ -72,16 +88,6 @@ AND : '&&';
 NOT : '!';
 
 
-// TOKENS de palabras reservadas 
-IF : 'if';
-ELSE : 'else';
-RETURN: 'return';
-
-// TOKENS de palabras reservadas de ciclos
-WHILE : 'while';
-FOR : 'for';
-
-
 // TOKENS de operaciones relacionales
 EQUAL : '==';
 NOTEQUAL : '!=';
@@ -92,9 +98,6 @@ LESSTHANEQUAL : '<=';
 
 
 //TOKENS de valores
-TRUE: 'true';
-FALSE: 'false';
-
 fragment DIGIT: [0-9];
 
 //Entero
@@ -111,7 +114,7 @@ CHARVALUE: '\'' LETTER '\'';
 
 
 //Lista de reglas gramaticales
-program: instructions
+prog: instructions
        |
        ;
 
@@ -145,66 +148,51 @@ returnTypeSpecifier: INT | DOUBLE | CHAR | VOID;
 
 
 //Declaracion de funcion
-funcDeclaration: returnTypeSpecifier ID OPAR params CPAR statement
-               | ID OPAR params CPAR statement
+funcDeclaration: returnTypeSpecifier ID OPAR paramList CPAR statement
+               | ID OPAR paramList CPAR statement
                ;
 
-params: paramList
-      |
-      ;
-
-paramList: paramList SEMI paramTypeList
-         | paramTypeList
+paramList: typeSpecifier paramId paramList
+         | COMMA typeSpecifier paramId paramList
+         |
          ;
-
-paramTypeList: typeSpecifier paramIdList;
-
-paramIdList: paramIdList COMMA paramTypeList
-           | paramIdList COMMA paramId
-           | paramId
-           ;
 
 paramId: ID;
 
-statement: expressionStmt | instBlock | selectionStmt | iterationStmt | returnStmt;
+statement: expressionStatement | instBlock | selectionStatement | iterationStatement | returnStatement | intr;
 
 //Bloque de instrucciones
-instBlock: OBRACE localDeclarations statementList CBRACE;
+instBlock: OBRACE statementList CBRACE;
 
-//Declaraciones locales de variables
-localDeclarations: localDeclarations varDeclaration
-                 |
-                 ;
-
-statementList: statementList statement
-             |
+statementList: statement statementList
+             | 
              ;
 
-expressionStmt: expression SEMI
-              | SEMI
-              ;
+expressionStatement: expression SEMI
+                   | SEMI
+                   ;
 
 //Seleccion
-selectionStmt: IF OPAR simpleExpression CPAR statement
-             | IF OPAR simpleExpression CPAR statement ELSE statement
-             ;
+selectionStatement: IF OPAR simpleExpression CPAR statement
+                  | IF OPAR simpleExpression CPAR statement ELSE statement
+                  ;
 
 //Ciclos
-iterationStmt: whileStmt
-             | forStmt
-             ;
+iterationStatement: whileStatement
+                  | forStatement
+                  ;
 //While
-whileStmt: WHILE OPAR simpleExpression CPAR statement;
+whileStatement: WHILE OPAR simpleExpression CPAR statement;
 
 //For
-forStmt: FOR OPAR forDefinition CPAR statement;
+forStatement: FOR OPAR forDefinition CPAR statement;
 forDefinition: forInit SEMI simpleExpression SEMI expression;
 forInit: typeSpecifier varDeclList;
 
 //Return
-returnStmt: RETURN SEMI
-          | RETURN expression SEMI
-          ;
+returnStatement: RETURN SEMI
+               | RETURN expression SEMI
+               ;
 
 // Operadores de asignacion
 assignmentOperator:  ASSIGN | MULTIPLYASSIGN | DIVIDEASSIGN | MODULUS | PLUSASSIGN | MINUSASSIGN;

@@ -9,10 +9,12 @@ double  parametrostipo(int a, double b);
 
 
 int pruebaFuncValor(){
-    int a = 0;
+    int zaaa = 0;
     double b = 15/2;
-    a = 10 + 15 / b;
-
+    zaaa = 10 + 15 / b;
+    int c(int a){
+        return a;
+    }
     while (a>b){
         a++;
     }

@@ -2,4 +2,3 @@ void vacio();
 void parametros(int a, int b);
 int vaciotipo(); 
 double  parametrostipo(int a, double b);
-void parametrostipoass(int a = 0, double b = 0);
