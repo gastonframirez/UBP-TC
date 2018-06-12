@@ -1,0 +1,4 @@
+void vacio();
+void parametros(int a, int b);
+int vaciotipo(); 
+double  parametrostipo(int a, double b);

@@ -1,0 +1,3 @@
+[   3   ]   [zx]
+[ ( 5 ) ( hola ) ]
+[90] (sol(luna)tierra(cielo))

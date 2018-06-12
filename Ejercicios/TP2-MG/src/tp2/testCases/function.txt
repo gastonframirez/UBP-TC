@@ -1,0 +1,11 @@
+int pruebaFuncValor(){
+    int a = 0;
+    double b = 15/2;
+    a = 10 + 15 / b;
+    return 0;
+}
+ 
+
+void pruebaFuncVoid(){
+    return;
+}

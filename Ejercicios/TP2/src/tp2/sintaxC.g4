@@ -20,7 +20,6 @@
 
 grammar sintaxC;
 
-
 // Lista de TOKENS
 
 // Caracteres especiales
@@ -115,19 +114,20 @@ CHARVALUE: '\'' LETTER '\'';
 
 //Lista de reglas gramaticales
 prog: instructions
-       |
+    | EOF
+    |
        ;
 
-instructions: instructions intr 
-            | intr
+instructions: instructions instr 
+            | instr
             ;
 
-intr: varDeclaration
+instr: varDeclaration semicolon
     | funcDeclaration
     ;
 
 //Declaracion de variables
-varDeclaration: typeSpecifier varDeclList SEMI;
+varDeclaration: typeSpecifier varDeclList;
 
 varDeclList: varDeclList COMMA varDeclInitialize
            | varDeclInitialize
@@ -157,7 +157,7 @@ paramList: typeSpecifier varId paramList
          |
          ;
 
-statement: expressionStatement | instBlock | selectionStatement | iterationStatement | returnStatement | intr;
+statement: expressionStatement | instBlock | selectionStatement | iterationStatement | returnStatement | instr;
 
 //Bloque de instrucciones
 instBlock: OBRACE statementList CBRACE;
@@ -166,8 +166,8 @@ statementList: statement statementList
              | 
              ;
 
-expressionStatement: expression SEMI
-                   | SEMI
+expressionStatement: expression semicolon
+                   | semicolon
                    ;
 
 //Seleccion
@@ -187,9 +187,11 @@ forStatement: FOR OPAR forDefinition CPAR statement;
 forDefinition: forInit SEMI simpleExpression SEMI expression;
 forInit: typeSpecifier varDeclList;
 
+semicolon: SEMI;
+
 //Return
-returnStatement: RETURN SEMI
-               | RETURN expression SEMI
+returnStatement: RETURN semicolon
+               | RETURN expression semicolon
                ;
 
 // Operadores de asignacion

@@ -1,0 +1,28 @@
+1- Crear el proyecto.
+
+2- Crear y llenar el archivo *.g4
+   El decorator "@header{ }" para insertar código fuente
+   en Java que se replicará en todos los archivos a generar.
+   Se lo debería usar para indicar el "package" al que pertenecen,
+   pero no se puede usar para hacer un "Run in TestRig..."
+
+3- Desde el menú "Run" hacer click en "Generate Recognizer..."
+
+4- Hacer click derecho en "Libraries" desde el panel de "Projects"
+   y agregar la biblioteca ANTLR.
+   Ojo con la documentación que leen, en NetBeans 7.4 se instala
+   ANTLR 4.5 y muchas funcionalidades que aparacen como "deprecated"
+   en la documentación refieren a ANTLR 4.7
+
+--> En este punto ya podemos programar en Java <--
+
+5- En el método "main" crear los objetos archivo de entrada,
+   el lexer y el parser. Conectarlos mutuamente.
+
+6- Para usar los listeners hay que crear el objeto que hará esta
+   tarea y conectarlo al objeto parser.
+
+7- Para comenzar con el parsing hay que llamar al método del
+   parser que se llama igual que el símbolo inicial. (se puede
+   iniciar el parsing con cualquier otra regla gramatical)
+

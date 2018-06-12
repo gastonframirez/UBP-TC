@@ -1,0 +1,52 @@
+int x;
+
+void holaMundo(int x, int y);
+
+int main()
+{
+	x = 50;
+	holaMundo(x);
+
+	int y;
+
+	y = x+10;
+
+	return 0;
+}
+
+void holaMundo(int w, int z);
+{
+	if(w>z)
+	{
+		w = 5.5;
+	}
+	else
+	{
+		z = 11;
+	}
+
+	while(w<z)
+	{
+		w=z;
+
+		z=w;
+
+	}
+}
+
+void holaMundo1(int error1, int error2)
+{
+	if error1>=error2)
+	{
+		error1 = 5;
+
+	}
+}
+
+void holaMundo2(int error3, int error4)
+{
+	if(error3>=error4)
+	{
+		error3 = 5
+	}
+}
